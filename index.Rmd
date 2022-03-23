@@ -9,7 +9,7 @@ bibliography: references.bib
 
 ## Basic Genetic Algorithm
 
-The candidate solutions are represented using the $\textit{path representation}$ where the cities in the tour are listed in an array in the order they are visited. If city $\textit{i} is the \textit{j}th element$ of the array, then city $\textit{i}$ is the $\textit{j}th$ city to be visited in the tour. 
+The candidate solutions are represented using the $\textit{path representation}$ where the cities in the tour are listed in an array in the order they are visited. If city $\textit{i}$ is the $\textit{j}th$ element of the array, then city $\textit{i}$ is the $\textit{j}th$ city to be visited in the tour. 
 This representation is the most intuitive to understand and seems logical to implement for a first draft of an elementary evolutionary algorithm. In Python, we represent each candidate solution in an array data structure. From left to right determining the order of the tour. The end of the tour, the first element of the array, is implicit and not added to the end of the array. 
 
 ## Initialization
@@ -33,7 +33,7 @@ The implemented mutation operator is based on a random swap, where two indexes i
 ## Recombination Operator
 
 Since we are dealing with a permutation representation, our choice of recombination operator was the $\textit{Partially Mapped Crossover (PMX)}$. 
-$\textit{PMX}$ can be described in the following steps (according to the definition of @back & @principles):
+$\textit{PMX}$ can be described in the following steps (according to the definition of @back; @principles):
 
 1. Choose two crossover points at random, copy the segment from the first parent P1 into the first child.
 2. From the start of the crossover interval, look for elements in second parent P2 that aren't present in P1.

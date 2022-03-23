@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Cristian Frigolett C." />
+
+
+<title>Genetic Algorithm</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+<link rel="stylesheet" href="styles.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Genetic Algorithm: The Travelling Salesman Problem</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Genetic Algorithm</h1>
+<h4 class="author">Cristian Frigolett C.</h4>
+<h4 class="date">23-03-2022</h4>
+
+</div>
+
+
+<div style="text-align: justify">
+<h2 id="basic-genetic-algorithm">Basic Genetic Algorithm</h2>
+<p>The candidate solutions are represented using the <span class="math inline">\(\textit{path representation}\)</span> where the cities in the tour are listed in an array in the order they are visited. If city <span class="math inline">\(\textit{i} is the \textit{j}th element\)</span> of the array, then city <span class="math inline">\(\textit{i}\)</span> is the <span class="math inline">\(\textit{j}th\)</span> city to be visited in the tour. This representation is the most intuitive to understand and seems logical to implement for a first draft of an elementary evolutionary algorithm. In Python, we represent each candidate solution in an array data structure. From left to right determining the order of the tour. The end of the tour, the first element of the array, is implicit and not added to the end of the array.</p>
+<h2 id="initialization">Initialization</h2>
+<p>For a predetermined initial population size <span class="math inline">\(\lambda\)</span> of 4000 candidates, we use the <code>random.sample</code> function to generate random permutations of tours. The subsequent <span class="math inline">\(\textit{Selection}\)</span> <span class="math inline">\(\rightarrow{}\)</span> <span class="math inline">\(Recombination\)</span> <span class="math inline">\(\rightarrow{}\)</span> <span class="math inline">\(Mutation\)</span> <span class="math inline">\(\rightarrow{}\)</span> <span class="math inline">\(Elimination\)</span> operations are carried out on this initial candidate population set.</p>
+<h2 id="selection-operators">Selection Operators</h2>
+<p>We consider fitness proportion selection and k-tournament selection as our selection operators. Due to the various limitations of the fitness proportion method such as high selective bias for high ranking individuals and uniform selective pressure when the individuals have approximately the same fitness, we implement <span class="math inline">\(\textit{k-tournament}\)</span> as the selection operator. Briefly described, <span class="math inline">\(\textit{k}\)</span> candidate solutions are uniformly sampled without replacement from the population, and the individual with the best fitness value is selected. This process is repeated <span class="math inline">\(\lambda\)</span> times.</p>
+<p>An advantage of tournament selection is that it does not require knowledge about the entire population or it’s rank, this is particularly useful when the population size is very large. Given that tournament selection looks at the relative instead of the absolute fitness value, it has the same properties as ranking schemes, i.e., it is invariant to translation and transposition of the fitness function. The parameter <span class="math inline">\(\textit{k}\)</span> in the algorithm allows to easily control the selective pressure by varying the size of the tournaments (<span class="citation">Eiben, Smith, and others (2003)</span>).</p>
+<p>One of the flaws of tournament selection is that since <span class="math inline">\(\lambda\)</span> tournaments are required to produce <span class="math inline">\(\lambda\)</span> selections, it suffers from the same problems as the roulette wheel algorithm, that is, the outcomes can show a high variance from the theoretical probability distribution (<span class="citation">Eiben, Smith, and others (2003)</span>).</p>
+<h2 id="mutation-operator">Mutation operator</h2>
+<p>The implemented mutation operator is based on a random swap, where two indexes in the solution are selected at random and then swapped. The mutation is applied with probability 1 to each individual in the offspring. If the resulting fitness value from the mutation is higher than the fitness without the mutation, the mutated individual is further kept for the elimination process, otherwise it is the non-mutated individual that further advances to the process of elimination. Considering that the recombination operator <span class="math inline">\(\textit{PMX}\)</span> already introduces randomness into the offspring by not fully preserving the genetic overlap between both parents, a mutation operator which introduces considerable randomness is not required. The operator does not include a parameter, but it can be extended by swaps between <span class="math inline">\(\textit{n}\)</span> elements, instead of only two.</p>
+<h2 id="recombination-operator">Recombination Operator</h2>
+<p>Since we are dealing with a permutation representation, our choice of recombination operator was the <span class="math inline">\(\textit{Partially Mapped Crossover (PMX)}\)</span>. <span class="math inline">\(\textit{PMX}\)</span> can be described in the following steps (according to the definition of <span class="citation">Bäck, Fogel, and Michalewicz (2018)</span> &amp; <span class="citation">Eiben, Smith, and others (2003)</span>):</p>
+<ol style="list-style-type: decimal">
+<li>Choose two crossover points at random, copy the segment from the first parent P1 into the first child.</li>
+<li>From the start of the crossover interval, look for elements in second parent P2 that aren’t present in P1.</li>
+<li>For each of these uncopied elements, say <span class="math inline">\(\textit{x}\)</span>, see what element is occupied in the child at the same index, let’s call this element <span class="math inline">\(\textit{y}\)</span>.</li>
+<li>Place <span class="math inline">\(\textit{x}\)</span> into the index of <span class="math inline">\(\textit{y}\)</span> of P2 into the child.</li>
+<li>If the position of <span class="math inline">\(\textit{y}\)</span> is already occupied in the child by an element <span class="math inline">\(\textit{z}\)</span>, put <span class="math inline">\(\textit{x}\)</span> in the index of <span class="math inline">\(\textit{z}\)</span> of P2 into the child.</li>
+<li>The remaining positions in the child can be filled from P2. Follow the same procedure with reversed parental roles to form the second child.</li>
+</ol>
+<p>A limitation of the <span class="math inline">\(\textit{PMX}\)</span> may be that desirable information from both the parents may not be fully carried over to the offspring, referred to as the property of <span class="math inline">\(\textit{respect}\)</span> (<span class="citation">Radcliffe and others (1991)</span>). This may bring additional randomness into our algorithm but may also destroy potential solutions.</p>
+<p>##Elimination operators</p>
+<p>To make sure that the best candidate solutions of the current generation are carried out to the next one, the algorithm uses elitism. This is our primary elimination operation where a portion (10%) of the population pool is kept aside at the beginning of each iteration. After the mutations, the top 0.9<span class="math inline">\(\lambda\)</span> candidates are selected from the new candidate pool and combined with the protected population.</p>
+<p>This elitism based elimination operator ensures that the best candidate solution will always be present in the next generation. The parameter to be selected is the <span class="math inline">\(\textit{elitism rate}\)</span>, is set at 10% of <span class="math inline">\(\lambda\)</span>. Since if the elitism rate parameter is too high, there will be less than desired exploration of the search space for generating new candidate solutions.</p>
+<h2 id="stopping-criterion">Stopping Criterion</h2>
+<p>A good stopping criterion should not interrupt the algorithm before convergence, and at the same time it is conservative enough to stop in a reasonable time lapse. The compromise between the convergence and the time lapse can be measured by the difference of the best fitness value of two consecutive iterations of the algorithm. Our stopping criterion considers that the algorithm converges when the difference between the best fitness value from generation <span class="math inline">\(\textit{i}\)</span> and from generation <span class="math inline">\(\textit{i}+1\)</span> is less than 0.0001 for five consecutive times.</p>
+<h2 id="numerical-experiments">Numerical Experiments</h2>
+<p>There are three parameters to be chosen in the algorithm. The first one is the population size. This parameter <span class="math inline">\(\lambda\)</span> decides how big our initial population is and how many candidates are considered for each iteration of the main loop of the algorithm. The second parameter is the elitism rate, this is the fraction of the population that is kept from the current generation and carried over to the next one. These tours are selected by taking the best candidates of each batch at the beginning of the iteration. The last parameter of the algorithm is the tournament size. This parameter decides how many candidates are randomly selected to compete in each iteration of the tournament selection.</p>
+<p>The parameters are decided manually with respect to the smallest benchmark problem. For each parameter, the algorithm was repeated ten times with different values while the other parameters remained the same. The value with the best objective and lowest mean objective are chosen as the final value for that parameter which is used in the implementation of the algorithm.</p>
+<p>The parameter values that generated the best results are as follows:</p>
+<ul>
+<li>Population size: 4500</li>
+<li>Elitism rate: 0.10</li>
+<li>Tournament size: 300</li>
+</ul>
+<h2 id="preliminary-results">Preliminary Results</h2>
+<p>We ran our algorithm several times on the smallest benchmark problem: <span class="math inline">\(\textit{tour29}\)</span>. Figure 1 shows a convergence graph of one of the generally better outcomes of our algorithm. This simulation needed 13.31 seconds to reach convergence. The algorithm ends with a best objective value of 27510.73. This is not the global optimum, since we have encountered some slightly lower fitness values during the parameter selection phase. As we run the algorithm multiple times, we conclude that there is some variation to the final solution after the algorithm reaches convergence, this is shown in figure Figure 2 in which we ran the algorithm ten times. The problem with the algorithm is that it is not deterministic and it can get stuck in an local optimum. Nevertheless, the average fitness value in which the algorithm usually converges is relatively close to the global optimum.</p>
+<br/>
+<p align="center">
+<img src="images/plot2.png" >
+<h4 align="center">
+Figure 1: Convergence Graph
+</h4>
+</p>
+<p><br/></p>
+<br/>
+<p align="center">
+<img src="images/repetition3.png" >
+<h4 align="center">
+Figure 2: Variation of best fitness values
+</h4>
+</p>
+<p><br/></p>
+<h2 id="convergence-to-local-minimum">Convergence to local minimum</h2>
+<p>We suspect our algorithm may suffer from premature convergence, i.e., sometimes the algorithm gets stuck in a sub-optimal local minimum. This could be due to insufficient genetic diversity within the population. Additional exploration operators may be added to improve diversity, which becomes especially relevant when dealing with TSP problems with larger number of cities.</p>
+<h2 id="further-improvements">Further improvements</h2>
+<p>To complement the added diversity, additional local search methods could also be implemented to improve convergence speed and exploit the high ranking candidate neighborhoods. Self-adaptivity for the <span class="math inline">\(\textit{tournament size}\)</span> parameter can also be included to control the exploration rate as a function of time, e.g., increase the selective pressure as the algorithm moves closer to convergence.</p>
+<h2 id="references">References</h2>
+</div>
+<div id="refs" class="references">
+<div id="ref-back">
+<p>Bäck, Thomas, David B Fogel, and Zbigniew Michalewicz. 2018. <em>Evolutionary Computation 1: Basic Algorithms and Operators</em>. CRC press.</p>
+</div>
+<div id="ref-principles">
+<p>Eiben, Agoston E, James E Smith, and others. 2003. <em>Introduction to Evolutionary Computing</em>. Vol. 53. Springer.</p>
+</div>
+<div id="ref-Radcliffe">
+<p>Radcliffe, Nicholas J, and others. 1991. “Forma Analysis and Random Respectful Recombination.” In <em>ICGA</em>, 91:222–29. Citeseer.</p>
+</div>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
